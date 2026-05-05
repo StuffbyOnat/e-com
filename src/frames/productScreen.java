@@ -352,7 +352,7 @@ public class productScreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
-        
+        buyProduct();
     }//GEN-LAST:event_buyButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
