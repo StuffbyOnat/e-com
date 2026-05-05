@@ -12,15 +12,17 @@ class ProductPane extends JPanel {
     private int id;
     private String name;
     private double price;
-
+    product prodcut;
+    
     // Renk ayarları
     private final Color NORMAL_COLOR = Color.WHITE;
     private final Color HOVER_COLOR = new Color(64, 64, 64); // Üzerine gelince kararması için koyu gri
 
-    public ProductPane(int id, String name, double price) {
+    public ProductPane(int id, String name, double price, String category, String description, String color, String size, String shade,String sku_Code) {
         this.id = id;
         this.name = name;
         this.price = price;
+        prodcut = new product(id, name, category, price, description, color, size, shade,sku_Code);
 
         // Panelin varsayılan tasarımı
         setBackground(NORMAL_COLOR);

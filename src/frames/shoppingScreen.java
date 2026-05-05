@@ -3,9 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package frames;
+import Database.dataHolder;
 import Database.initializeDatabase;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,6 +17,7 @@ public class shoppingScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(shoppingScreen.class.getName());
     Connection conn;
+    ArrayList<product> products;
     /**
      * Creates new form shoppingScreen
      */
@@ -23,13 +26,17 @@ public class shoppingScreen extends javax.swing.JFrame {
         this.setLocation(300,0);
         this.setSize(600,800);
         conn = loginScreen.conn;
+        products = new ArrayList<>();
         initializeDatas();
     }
 
     
     void initializeDatas(){
         // Veritabanı bağlantını sağladığını ve sorguyu çalıştırdığını varsayıyoruz:
-        String sql = "SELECT productID, brandName, basePrice FROM Products"; // Tablo adın neyse ona göre düzelt
+        String sql = "SELECT * " +
+                "FROM Products p " +
+                "join Product_Variants pv ON p.productID=pv.productID " +
+                "join Categories c ON p.categoryID=c.categoryID"; // Tablo adın neyse ona göre düzelt
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -40,12 +47,24 @@ public class shoppingScreen extends javax.swing.JFrame {
                 int dbId = rs.getInt("productID");
                 String dbName = rs.getString("brandName");
                 double dbPrice = rs.getDouble("basePrice");
+                String dbCategory = rs.getString("categoryName");
+                String dbDescription = rs.getString("description");
+                String dbColor = rs.getString("color");
+                String dbSize = rs.getString("size");
+                String dbShade = rs.getString("shade");
+                String dbsku_Code = rs.getString("sku_Code");
 
                 // 2. Bu datalarla YENİ BİR OBJE yarat (ProductPane)
-                ProductPane yeniUrunObjesi = new ProductPane(dbId, dbName, dbPrice);
+                ProductPane yeniUrunObjesi = new ProductPane(dbId, dbName, dbPrice, dbCategory, dbDescription, dbColor, dbSize, dbShade, dbsku_Code);
+                product product = new product(dbId, dbName, dbCategory, dbPrice, dbDescription, dbColor, dbSize, dbShade, dbsku_Code);
+                products.add(product);
+                dataHolder.products.add(product);
+                yeniUrunObjesi.prodcut=product;
+                System.out.println("product added to arraylist: " + dataHolder.findProductById(dbId));
 
                 // 3. Yarattığın bu yeni objeyi arayüzdeki ana panele ekle
                 gridPanel.add(yeniUrunObjesi);
+
             }
 
             // İşlem bitince ekrandaki güncellemeyi göster
