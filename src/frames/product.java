@@ -71,6 +71,7 @@ public class product {
     this.color=color;
     this.size=size;
     this.shade=shade;
+    this.sku_Code=sku_Code;
     }
 
     @Override

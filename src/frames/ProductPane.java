@@ -12,7 +12,7 @@ class ProductPane extends JPanel {
     private int id;
     private String name;
     private double price;
-    product prodcut;
+    product product;
     
     JLabel iconLabel;
     
@@ -24,7 +24,7 @@ class ProductPane extends JPanel {
         this.id = id;
         this.name = name;
         this.price = price;
-        prodcut = new product(id, name, category, price, description, color, size, shade,sku_Code);
+        product = new product(id, name, category, price, description, color, size, shade,sku_Code);
         iconLabel = new JLabel();
         
         // Panelin varsayılan tasarımı
@@ -63,9 +63,19 @@ class ProductPane extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Panele tıklandığında yapılacak işlem
-                System.out.println("Tıklanan Obje ID: " + id);
-                JOptionPane.showMessageDialog(null, name + " isimli ürüne tıkladın!");
+                // Üzerinde bulunduğumuz ana JFrame'i (shoppingScreen) bul
+                Window ancestor = SwingUtilities.getWindowAncestor(ProductPane.this);
+                
+                if (ancestor instanceof shoppingScreen) {
+                    shoppingScreen parentScreen = (shoppingScreen) ancestor;
+
+                    // Yeni productScreen ekranını oluştur, parent ekranı ve bu paneli gönder
+                    productScreen pScreen = new productScreen(parentScreen, ProductPane.this);
+
+                    // Ana ekranı tamamen kapatmıyoruz, sadece gizliyoruz ki geri dönebilelim
+                    parentScreen.setVisible(false);
+                    pScreen.setVisible(true);
+                }
             }
         });
         

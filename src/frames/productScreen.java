@@ -4,6 +4,10 @@
  */
 package frames;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.*;
+
 /**
  *
  * @author onatu
@@ -12,13 +16,94 @@ public class productScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(productScreen.class.getName());
     ProductPane productPane;
+    boolean inStock;
+    Connection conn;
     /**
      * Creates new form productFrame
      */
-    public productScreen(ProductPane productPane) {
+    public productScreen(shoppingScreen shoppingScreen, ProductPane productPane) {
         initComponents();
-        this.setSize(650,800);
         this.productPane = productPane;
+        conn=shoppingScreen.conn;
+        getStockInfo();
+        
+        // 1. Ekran boyutunu ve konumunu eski ekrandan birebir kopyala
+        //this.setSize(shoppingScreen.getSize());
+        this.setLocation(shoppingScreen.getLocation());
+        
+        // 2. Arayüzdeki (JLabel ve JTextPane) alanları objeden gelen verilerle doldur
+        // (ProductPane içindeki nesnenin adı "prodcut" olduğu için o şekilde çağırdık)
+        if (productPane.product != null) {
+            name.setText(productPane.product.getProductName());
+            category.setText(productPane.product.getCategory());
+            sku_code.setText(productPane.product.getSku_Code());
+            description.setText(productPane.product.getDescription());
+            color.setText(productPane.product.getColor());
+            size.setText(productPane.product.getSize());
+            shade.setText(productPane.product.getShade());
+        }
+
+        // 3. İkon ayarlaması (Eğer utilities sınıfınla atamak istersen)
+        // utilities util = new utilities();
+        // productIcon.setIcon(util.setIconSize(84, 91, "/frames/packageIcon.png"));
+
+        // 4. "Go Back" (Geri Dön) Butonunun Çalışması (jButton1)
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Eski ekranın boyut ve konumunu bu ekranın güncel haline eşitle (Pencereyi kaydırdıysa diye)
+                //shoppingScreen.setSize(productScreen.this.getSize());
+                shoppingScreen.setLocation(productScreen.this.getLocation());
+                
+                // Eski ekranı göster, bu ekranı kapat (yok et)
+                shoppingScreen.initializeDatas();
+                shoppingScreen.revalidate();
+                shoppingScreen.repaint();
+                shoppingScreen.setVisible(true);
+                productScreen.this.dispose();
+            }
+        });
+    }
+    
+    public void getStockInfo() {
+        // Ürün objesi yoksa hata vermemesi için güvenlik kontrolü
+        if (productPane.product == null) return;
+
+        // Ürünün benzersiz SKU kodunu alıyoruz
+        String skuCode = productPane.product.getSku_Code();
+        
+        // Veritabanı Sorgusu: O SKU koduna sahip varyantın tüm depolardaki stoklarını topla
+        String sql = "SELECT SUM(i.stockQuantity) AS totalStock " +
+                     "FROM Inventory i " +
+                     "JOIN Product_Variants pv ON i.variantID = pv.variantID " +
+                     "WHERE pv.sku_Code = ?";
+
+        // Güvenli sorgu çalıştırmak için PreparedStatement kullanıyoruz
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, skuCode); // Soru işareti olan yere SKU kodunu koy
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                int stock = 0;
+                if (rs.next()) {
+                    stock = rs.getInt("totalStock"); // Toplam stoğu değişkene ata
+                }
+
+                // Stok kontrolü ve Arayüz (UI) Güncellemesi
+                if (stock > 0) {
+                    stockStatus.setText("In Stock");
+                    stockStatus.setForeground(new java.awt.Color(0, 153, 51)); // Yazıyı Yeşil yap
+                    addButton.setEnabled(true); // Sepete Ekle butonunu aktifleştir
+                } else {
+                    stockStatus.setText("Out of Stock");
+                    stockStatus.setForeground(new java.awt.Color(204, 0, 0)); // Yazıyı Kırmızı yap
+                    addButton.setEnabled(false); // Stok yoksa butonu devre dışı bırak (Tıklanamaz)
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            stockStatus.setText("Stock Error");
+            addButton.setEnabled(false);
+        }
     }
 
     /**

@@ -4,8 +4,7 @@
  */
 package frames;
 import Database.dataHolder;
-import Database.initializeDatabase;
-import javax.swing.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -31,7 +30,9 @@ public class shoppingScreen extends javax.swing.JFrame {
     }
 
     
-    void initializeDatas(){
+    public void initializeDatas(){
+        gridPanel.removeAll();
+        
         // Veritabanı bağlantını sağladığını ve sorguyu çalıştırdığını varsayıyoruz:
         String sql = "SELECT * " +
                 "FROM Products p " +
@@ -59,7 +60,7 @@ public class shoppingScreen extends javax.swing.JFrame {
                 product product = new product(dbId, dbName, dbCategory, dbPrice, dbDescription, dbColor, dbSize, dbShade, dbsku_Code);
                 products.add(product);
                 dataHolder.products.add(product);
-                yeniUrunObjesi.prodcut=product;
+                yeniUrunObjesi.product =product;
                 System.out.println("product added to arraylist: " + dataHolder.findProductById(dbId));
 
                 // 3. Yarattığın bu yeni objeyi arayüzdeki ana panele ekle
