@@ -24,7 +24,7 @@ public class shoppingScreen extends javax.swing.JFrame {
     public shoppingScreen(loginScreen loginScreen) {
         initComponents();
         this.setLocation(300,0);
-        this.setSize(600,800);
+        this.setSize(650,800);
         conn = loginScreen.conn;
         products = new ArrayList<>();
         initializeDatas();

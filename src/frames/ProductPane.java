@@ -7,12 +7,14 @@ import java.awt.event.MouseEvent;
 
 // JPanel'i miras alan kendi özel objemiz
 class ProductPane extends JPanel {
-
+    utilities utilities = new utilities();
     // Veritabanından gelecek dataları tutacak değişkenler
     private int id;
     private String name;
     private double price;
     product prodcut;
+    
+    JLabel iconLabel;
     
     // Renk ayarları
     private final Color NORMAL_COLOR = Color.WHITE;
@@ -23,7 +25,8 @@ class ProductPane extends JPanel {
         this.name = name;
         this.price = price;
         prodcut = new product(id, name, category, price, description, color, size, shade,sku_Code);
-
+        iconLabel = new JLabel();
+        
         // Panelin varsayılan tasarımı
         setBackground(NORMAL_COLOR);
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
@@ -35,11 +38,13 @@ class ProductPane extends JPanel {
         nameLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel priceLbl = new JLabel(price + " TL");
         priceLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
 
         add(Box.createVerticalStrut(40)); // Üstten boşluk
         add(nameLbl);
         add(Box.createVerticalStrut(10)); // Araya boşluk
         add(priceLbl);
+
 
         // --- BÜTÜN OLAY BURADA: MOUSE ETKİLEŞİMLERİ ---
         addMouseListener(new MouseAdapter() {
@@ -63,5 +68,9 @@ class ProductPane extends JPanel {
                 JOptionPane.showMessageDialog(null, name + " isimli ürüne tıkladın!");
             }
         });
+        
+    }
+    void setFrameIcons(){
+    iconLabel.setIcon(utilities.setIconSize(20, 20, "/frames/packageIcon.png"));
     }
 }
