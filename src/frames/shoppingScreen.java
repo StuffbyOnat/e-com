@@ -87,18 +87,18 @@ public class shoppingScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         topPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        shoppingLabel = new javax.swing.JLabel();
+        ordersButton = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
         gridPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 51, 255));
-        jLabel1.setText("Shopping");
+        shoppingLabel.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
+        shoppingLabel.setForeground(new java.awt.Color(255, 51, 255));
+        shoppingLabel.setText("Shopping");
 
-        jButton1.setText("Cart");
+        ordersButton.setText("Orders");
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -106,9 +106,9 @@ public class shoppingScreen extends javax.swing.JFrame {
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(ordersButton)
                 .addGap(28, 28, 28))
         );
         topPanelLayout.setVerticalGroup(
@@ -116,8 +116,8 @@ public class shoppingScreen extends javax.swing.JFrame {
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ordersButton))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -138,9 +138,9 @@ public class shoppingScreen extends javax.swing.JFrame {
 //
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel gridPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton ordersButton;
     private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JLabel shoppingLabel;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

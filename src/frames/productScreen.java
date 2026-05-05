@@ -7,6 +7,7 @@ package frames;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,6 +25,7 @@ public class productScreen extends javax.swing.JFrame {
     public productScreen(shoppingScreen shoppingScreen, ProductPane productPane) {
         initComponents();
         this.productPane = productPane;
+        this.setLocation(468, 420);
         conn=shoppingScreen.conn;
         getStockInfo();
         
@@ -48,7 +50,7 @@ public class productScreen extends javax.swing.JFrame {
         // productIcon.setIcon(util.setIconSize(84, 91, "/frames/packageIcon.png"));
 
         // 4. "Go Back" (Geri Dön) Butonunun Çalışması (jButton1)
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 // Eski ekranın boyut ve konumunu bu ekranın güncel haline eşitle (Pencereyi kaydırdıysa diye)
                 //shoppingScreen.setSize(productScreen.this.getSize());
@@ -92,17 +94,88 @@ public class productScreen extends javax.swing.JFrame {
                 if (stock > 0) {
                     stockStatus.setText("In Stock");
                     stockStatus.setForeground(new java.awt.Color(0, 153, 51)); // Yazıyı Yeşil yap
-                    addButton.setEnabled(true); // Sepete Ekle butonunu aktifleştir
+                    buyButton.setEnabled(true); // Sepete Ekle butonunu aktifleştir
                 } else {
                     stockStatus.setText("Out of Stock");
                     stockStatus.setForeground(new java.awt.Color(204, 0, 0)); // Yazıyı Kırmızı yap
-                    addButton.setEnabled(false); // Stok yoksa butonu devre dışı bırak (Tıklanamaz)
+                    buyButton.setEnabled(false); // Stok yoksa butonu devre dışı bırak (Tıklanamaz)
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
             stockStatus.setText("Stock Error");
-            addButton.setEnabled(false);
+            buyButton.setEnabled(false);
+        }
+    }
+ private void buyProduct(){
+        if (productPane.product == null) return;
+
+        String skuCode = productPane.product.getSku_Code();
+        double price = productPane.product.getBasePrice();
+        
+        // DİKKAT: Şu an test için userID'yi 2 (Fatma Kaya) olarak sabitliyoruz. 
+        // İleride login ekranından giriş yapan kullanıcının ID'sini buraya aktarabilirsin.
+        int currentUserId = 2;
+
+        try {
+            // 1. Önce bu SKU koduna ait varyantın ID'sini (variantID) bulmalıyız
+            String variantQuery = "SELECT variantID FROM Product_Variants WHERE sku_Code = ?";
+            PreparedStatement pstVar = conn.prepareStatement(variantQuery);
+            pstVar.setString(1, skuCode);
+            ResultSet rsVar = pstVar.executeQuery();
+            
+            int variantId = -1;
+            if(rsVar.next()) {
+                variantId = rsVar.getInt("variantID");
+            }
+
+            if(variantId == -1) {
+                JOptionPane.showMessageDialog(this, "Hata: Ürün varyantı bulunamadı!", "Hata", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 2. Yeni OrderID ve DetailID oluştur (Tablolarında Auto-Increment olmadığı için MAX+1 yapıyoruz)
+            Statement stmt = conn.createStatement();
+            ResultSet rsOrd = stmt.executeQuery("SELECT COALESCE(MAX(orderID), 6000) + 1 FROM Orders");
+            int newOrderId = 6000;
+            if(rsOrd.next()) newOrderId = rsOrd.getInt(1);
+
+            ResultSet rsDet = stmt.executeQuery("SELECT COALESCE(MAX(detailID), 7000) + 1 FROM Order_Details");
+            int newDetailId = 7000;
+            if(rsDet.next()) newDetailId = rsDet.getInt(1);
+
+            // 3. Siparişi 'Orders' tablosuna ekle
+            String insertOrder = "INSERT INTO Orders (orderID, userID, orderDate, totalAmount, status) VALUES (?, ?, NOW(), ?, 'Processing')";
+            PreparedStatement pstOrd = conn.prepareStatement(insertOrder);
+            pstOrd.setInt(1, newOrderId);
+            pstOrd.setInt(2, currentUserId);
+            pstOrd.setDouble(3, price);
+            pstOrd.executeUpdate();
+
+            // 4. Sipariş Detayını 'Order_Details' tablosuna ekle 
+            // BÜYÜK AN: Bu kod çalıştığında senin SQL'deki trigger'ın devreye girecek ve Inventory tablosundan stoğu 1 düşecek!
+            String insertDetail = "INSERT INTO Order_Details (detailID, orderID, variantID, quantity, unitPrice) VALUES (?, ?, ?, 1, ?)";
+            PreparedStatement pstDet = conn.prepareStatement(insertDetail);
+            pstDet.setInt(1, newDetailId);
+            pstDet.setInt(2, newOrderId);
+            pstDet.setInt(3, variantId);
+            pstDet.setDouble(4, price);
+            pstDet.executeUpdate();
+
+            // 5. İşlem başarılı! Kullanıcıya mesaj ver ve ekrandaki stok miktarını anında güncelle
+            JOptionPane.showMessageDialog(this, "Order is successful and now being processed.", "Başarılı", JOptionPane.INFORMATION_MESSAGE);
+            
+            getStockInfo(); // Stoğu tekrar çeker, eğer stok 0'a düştüyse butonu otomatik kapatır.
+
+        } catch (SQLException ex) {
+            // Eğer senin Trigger "Insufficient stock!" hatası fırlatırsa buraya düşer
+            if(ex.getMessage().contains("Insufficient stock")) {
+                JOptionPane.showMessageDialog(this, "Sorry,Out of stock!", "Stock Error", JOptionPane.WARNING_MESSAGE);
+                getStockInfo(); // Ekranı güncelle ki "Out of Stock" yazsın
+            } else {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Hata", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -133,8 +206,8 @@ public class productScreen extends javax.swing.JFrame {
         color = new javax.swing.JLabel();
         size = new javax.swing.JLabel();
         shade = new javax.swing.JLabel();
-        addButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        buyButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -173,9 +246,10 @@ public class productScreen extends javax.swing.JFrame {
 
         shade.setText("jLabel3");
 
-        addButton.setText("add to cart");
+        buyButton.setText("Buy");
+        buyButton.addActionListener(this::buyButtonActionPerformed);
 
-        jButton1.setText("go back");
+        backButton.setText("go back");
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -210,7 +284,7 @@ public class productScreen extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(55, 55, 55)
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(buyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -219,7 +293,7 @@ public class productScreen extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(52, 52, 52)
-                                .addComponent(jButton1))
+                                .addComponent(backButton))
                             .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(descriptionLabel)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))))
@@ -239,7 +313,7 @@ public class productScreen extends javax.swing.JFrame {
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(nameLabel)
-                            .addComponent(jButton1))
+                            .addComponent(backButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -256,10 +330,11 @@ public class productScreen extends javax.swing.JFrame {
                         .addComponent(stockStatus))
                     .addComponent(jScrollPane1))
                 .addGap(30, 30, 30)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(colorLabel)
-                    .addComponent(color)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(color)
+                        .addComponent(buyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sizeLabel)
@@ -276,15 +351,19 @@ public class productScreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void buyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyButtonActionPerformed
+        
+    }//GEN-LAST:event_buyButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton buyButton;
     private javax.swing.JLabel category;
     private javax.swing.JLabel categoryLabel;
     private javax.swing.JLabel color;
     private javax.swing.JLabel colorLabel;
     private javax.swing.JTextPane description;
     private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel name;
