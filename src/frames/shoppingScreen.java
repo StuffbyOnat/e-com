@@ -1,11 +1,16 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package frames;
 import Database.User;
 import Database.dataHolder;
+
 import java.sql.*;
 import java.util.ArrayList;
-import javax.swing.table.DefaultTableModel;
 
 /**
+ *
  * @author onatu
  */
 public class shoppingScreen extends javax.swing.JFrame {
@@ -16,34 +21,55 @@ public class shoppingScreen extends javax.swing.JFrame {
     ordersScreenCustomer os_Customer;
     ordersScreenAdmin os_Admin;
 
+    /**
+     * Creates new form shoppingScreen
+     */
     public shoppingScreen(loginScreen loginScreen) {
         initComponents();
-        this.setLocation(300, 0);
-        this.setSize(650, 800);
+        this.setLocation(300,0);
+        this.setSize(650,800);
         conn = loginScreen.conn;
         products = new ArrayList<>();
+
+        // 1. Arama çubuğuna tıklayınca içindeki "Search Field" yazısını otomatik temizle
+        searchField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (searchField.getText().equals("Search Field")) {
+                    searchField.setText("");
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (searchField.getText().isEmpty()) {
+                    searchField.setText("Search Field");
+                }
+            }
+        });
+
+        // 2. ComboBox'lardan yeni bir şey seçildiği anda filtrelemeyi tetikle
+        categoryBox.addActionListener(e -> applyFilters());
+        brandBox.addActionListener(e -> applyFilters());
+
         initializeDatas();
         loadCategories();
         loadBrands();
     }
 
-    public void initializeDatas() {
+    public void initializeDatas(){
         gridPanel.removeAll();
         products.clear();
         dataHolder.products.clear();
 
-        // Veritabanı sorgusu
-        String sql = "SELECT * FROM Products p " +
-                "JOIN Product_Variants pv ON p.productID = pv.productID " +
-                "JOIN Categories c ON p.categoryID = c.categoryID";
+        String sql = "SELECT * " +
+                "FROM Products p " +
+                "join Product_Variants pv ON p.productID=pv.productID " +
+                "join Categories c ON p.categoryID=c.categoryID";
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 int dbId = rs.getInt("productID");
-                // HATA BURADAYDI: 'productName' yerine 'brandName' kullanıldı
-                String dbName = rs.getString("brandName");
+                String dbName = rs.getString("brandName"); // productName hatası düzeltildi
                 double dbPrice = rs.getDouble("basePrice");
                 String dbCategory = rs.getString("categoryName");
                 String dbDescription = rs.getString("description");
@@ -53,15 +79,15 @@ public class shoppingScreen extends javax.swing.JFrame {
                 String dbsku_Code = rs.getString("sku_Code");
                 String dbBrandName = rs.getString("brandName");
 
-                // Objeleri 10 parametreli yeni düzene göre oluşturuyoruz
                 ProductPane yeniUrunObjesi = new ProductPane(dbId, dbName, dbCategory, dbPrice, dbDescription, dbColor, dbSize, dbShade, dbsku_Code, dbBrandName);
-                product pObj = new product(dbId, dbName, dbCategory, dbPrice, dbDescription, dbColor, dbSize, dbShade, dbsku_Code, dbBrandName);
+                product product = new product(dbId, dbName, dbCategory, dbPrice, dbDescription, dbColor, dbSize, dbShade, dbsku_Code, dbBrandName);
 
-                products.add(pObj);
-                dataHolder.products.add(pObj);
-                yeniUrunObjesi.product = pObj;
+                products.add(product);
+                dataHolder.products.add(product);
+                yeniUrunObjesi.product = product;
 
-                System.out.println("product added: " + dbBrandName);
+                System.out.println("product added to arraylist: " + dataHolder.findProductById(dbId));
+
                 gridPanel.add(yeniUrunObjesi);
             }
 
@@ -73,50 +99,98 @@ public class shoppingScreen extends javax.swing.JFrame {
         }
     }
 
-    public void loadCategories() {
+    // otomatically loads categories
+    public void loadCategories(){
         categoryBox.removeAllItems();
         categoryBox.addItem("All");
         String sql = "SELECT DISTINCT categoryName FROM Categories";
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
+        try(
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)
+        ){
+            while(rs.next()){
                 categoryBox.addItem(rs.getString("categoryName"));
             }
-        } catch (SQLException e) {
+        }catch(SQLException e){
             e.printStackTrace();
         }
     }
 
-    public void loadBrands() {
+    // otomatically loads brand names
+    public void loadBrands(){
         brandBox.removeAllItems();
         brandBox.addItem("All");
         String sql = "SELECT DISTINCT brandName FROM Products";
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
+        try(
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)
+        ){
+            while(rs.next()){
                 brandBox.addItem(rs.getString("brandName"));
             }
-        } catch (SQLException e) {
+        }catch(SQLException e){
             e.printStackTrace();
         }
     }
 
-    public void showProducts(ArrayList<product> productList) {
+    // Tüm filtrelemeyi tek bir merkezden yönetecek sihirli metod
+    public void applyFilters() {
+        String text = searchField.getText().toLowerCase();
+
+        // Eğer arama çubuğunda hala "Search Field" yazıyorsa (kullanıcı silmemişse), boş say
+        if (text.equals("search field")) {
+            text = "";
+        }
+
+        String selectedCategory = categoryBox.getSelectedItem() != null ? categoryBox.getSelectedItem().toString() : "All";
+        String selectedBrand = brandBox.getSelectedItem() != null ? brandBox.getSelectedItem().toString() : "All";
+
+        ArrayList<product> results = new ArrayList<>();
+        for (product p : dataHolder.products) {
+            // Hem ürün adında hem marka adında arama yapıyoruz ki hiçbir ürünü kaçırmasın
+            boolean matchesName = p.getProductName().toLowerCase().contains(text) || p.getBrandName().toLowerCase().contains(text);
+            boolean matchesCategory = selectedCategory.equals("All") || p.getCategory().equalsIgnoreCase(selectedCategory);
+            boolean matchesBrand = selectedBrand.equals("All") || p.getBrandName().equalsIgnoreCase(selectedBrand);
+
+            if (matchesName && matchesCategory && matchesBrand) {
+                results.add(p);
+            }
+        }
+        showProducts(results);
+    }
+
+    public void showProducts(ArrayList<product> productList){
         gridPanel.removeAll();
-        for (product p : productList) {
+        for(product p : productList){
             ProductPane panel = new ProductPane(
-                    p.getProductID(), p.getProductName(), p.getCategory(),
-                    p.getBasePrice(), p.getDescription(), p.getColor(),
-                    p.getSize(), p.getShade(), p.getSku_Code(), p.getBrandName()
+                    p.getProductID(),
+                    p.getProductName(),
+                    p.getCategory(),
+                    p.getBasePrice(),
+                    p.getDescription(),
+                    p.getColor(),
+                    p.getSize(),
+                    p.getShade(),
+                    p.getSku_Code(),
+                    p.getBrandName()
             );
             panel.product = p;
             gridPanel.add(panel);
         }
+
         gridPanel.revalidate();
         gridPanel.repaint();
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         topPanel = new javax.swing.JPanel();
         shoppingLabel = new javax.swing.JLabel();
         ordersButton = new javax.swing.JButton();
@@ -129,14 +203,15 @@ public class shoppingScreen extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        shoppingLabel.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18));
+        shoppingLabel.setFont(new java.awt.Font("Segoe UI Emoji", 1, 18)); // NOI18N
         shoppingLabel.setForeground(new java.awt.Color(255, 51, 255));
         shoppingLabel.setText("Shopping");
 
         ordersButton.setText("Orders");
         ordersButton.addActionListener(this::ordersButtonActionPerformed);
 
-        searchField.setText("");
+        searchField.setText("Search Field");
+        searchField.addActionListener(this::searchFieldActionPerformed);
         searchField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 searchFieldKeyReleased(evt);
@@ -144,7 +219,14 @@ public class shoppingScreen extends javax.swing.JFrame {
         });
 
         searchButton.setText("Search 🔎");
+        searchButton.setName("searchButton"); // NOI18N
         searchButton.addActionListener(this::searchButtonActionPerformed);
+
+        categoryBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        categoryBox.setName("Categories"); // NOI18N
+
+        brandBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        brandBox.setName("Brands"); // NOI18N
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -154,16 +236,20 @@ public class shoppingScreen extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
-                                .addComponent(searchButton)
-                                .addGap(10, 10, 10)
-                                .addComponent(categoryBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
-                                .addComponent(brandBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ordersButton)
-                                .addContainerGap())
+                                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(topPanelLayout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(ordersButton)
+                                                .addContainerGap())
+                                        .addGroup(topPanelLayout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(searchButton)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(categoryBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(brandBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         topPanelLayout.setVerticalGroup(
                 topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,62 +257,58 @@ public class shoppingScreen extends javax.swing.JFrame {
                                 .addGap(19, 19, 19)
                                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(ordersButton)
+                                        .addComponent(ordersButton))
+                                .addContainerGap(36, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topPanelLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(searchButton)
                                         .addComponent(categoryBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(brandBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(20, Short.MAX_VALUE))
+                                .addContainerGap())
         );
 
         getContentPane().add(topPanel, java.awt.BorderLayout.PAGE_START);
-        gridPanel.setLayout(new java.awt.GridLayout(0, 4, 10, 10));
+
+        gridPanel.setLayout(new java.awt.GridLayout(0, 4));
         scrollPane.setViewportView(gridPanel);
+
         getContentPane().add(scrollPane, java.awt.BorderLayout.CENTER);
+
         pack();
-    }// </editor-fold>
+    }// </editor-fold>//GEN-END:initComponents
 
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String text = searchField.getText().toLowerCase();
-        ArrayList<product> results = new ArrayList<>();
-        for (product p : dataHolder.products) {
-            if (p.getProductName().toLowerCase().contains(text)) {
-                results.add(p);
-            }
-        }
-        showProducts(results);
-    }
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        applyFilters();
+    }//GEN-LAST:event_searchFieldActionPerformed
 
-    private void searchFieldKeyReleased(java.awt.event.KeyEvent evt) {
-        String text = searchField.getText().toLowerCase();
-        String selectedCategory = categoryBox.getSelectedItem() != null ? categoryBox.getSelectedItem().toString() : "All";
-        String selectedBrand = brandBox.getSelectedItem() != null ? brandBox.getSelectedItem().toString() : "All";
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        applyFilters();
+    }//GEN-LAST:event_searchButtonActionPerformed
 
-        ArrayList<product> results = new ArrayList<>();
-        for (product p : dataHolder.products) {
-            boolean matchesName = p.getProductName().toLowerCase().contains(text);
-            boolean matchesCategory = selectedCategory.equals("All") || p.getCategory().equalsIgnoreCase(selectedCategory);
-            boolean matchesBrand = selectedBrand.equals("All") || p.getBrandName().equalsIgnoreCase(selectedBrand);
-            if (matchesName && matchesCategory && matchesBrand) {
-                results.add(p);
-            }
-        }
-        showProducts(results);
-    }
+    private void searchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyReleased
+        applyFilters();
+    }//GEN-LAST:event_searchFieldKeyReleased
 
-    private void ordersButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        if (User.getRole().equalsIgnoreCase("customer")) {
-            os_Customer = new ordersScreenCustomer(conn, this);
+    private void ordersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ordersButtonActionPerformed
+        if(User.getRole().toLowerCase().equals("customer")){
+            os_Customer=new ordersScreenCustomer(conn,this);
             os_Customer.setVisible(true);
             this.setVisible(false);
-        } else if (User.getRole().equalsIgnoreCase("admin")) {
-            os_Admin = new ordersScreenAdmin(conn, this);
+        }
+        else if(User.getRole().toLowerCase().equals("admin")){
+            os_Admin=new ordersScreenAdmin(conn,this);
             os_Admin.setVisible(true);
             this.setVisible(false);
         }
-    }
+    }//GEN-LAST:event_ordersButtonActionPerformed
 
-    // Variables declaration - do not modify
+    /**
+     * @param args the command line arguments
+     */
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> brandBox;
     private javax.swing.JComboBox<String> categoryBox;
     private javax.swing.JPanel gridPanel;
@@ -236,5 +318,5 @@ public class shoppingScreen extends javax.swing.JFrame {
     private javax.swing.JTextField searchField;
     private javax.swing.JLabel shoppingLabel;
     private javax.swing.JPanel topPanel;
-    // End of variables declaration
+    // End of variables declaration//GEN-END:variables
 }
