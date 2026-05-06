@@ -107,7 +107,11 @@ public class ordersScreenCustomer extends javax.swing.JFrame implements OrderVie
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        // TODO add your handling code here:
+       shoppingScreen.initializeDatas();
+       shoppingScreen.revalidate();
+       shoppingScreen.repaint();
+       shoppingScreen.setVisible(true);
+       this.setVisible(false);
     }//GEN-LAST:event_backButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
