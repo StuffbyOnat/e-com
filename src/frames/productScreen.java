@@ -4,6 +4,7 @@
  */
 package frames;
 
+import Database.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
@@ -115,7 +116,7 @@ public class productScreen extends javax.swing.JFrame {
         
         // DİKKAT: Şu an test için userID'yi 2 (Fatma Kaya) olarak sabitliyoruz. 
         // İleride login ekranından giriş yapan kullanıcının ID'sini buraya aktarabilirsin.
-        int currentUserId = 2;
+        int currentUserId = User.getUserID();
 
         try {
             // 1. Önce bu SKU koduna ait varyantın ID'sini (variantID) bulmalıyız

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package frames;
+import Database.User;
 import Database.dataHolder;
 
 import java.sql.*;
@@ -99,6 +100,7 @@ public class shoppingScreen extends javax.swing.JFrame {
         shoppingLabel.setText("Shopping");
 
         ordersButton.setText("Orders");
+        ordersButton.addActionListener(this::ordersButtonActionPerformed);
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -130,6 +132,14 @@ public class shoppingScreen extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ordersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ordersButtonActionPerformed
+        if(User.getRole().toLowerCase().equals("customer")){
+        ordersScreenCustomer os_Customer=new ordersScreenCustomer(conn,this);
+        os_Customer.setVisible(true);
+        this.setVisible(false);
+        }
+    }//GEN-LAST:event_ordersButtonActionPerformed
 
     /**
      * @param args the command line arguments

@@ -5,6 +5,7 @@
 
 package frames;
 import Database.initializeDatabase;
+import Database.User;
 import javax.swing.*;
 import java.sql.*;
 /**
@@ -192,6 +193,7 @@ if(emailField.getText().equals(""))
         
             if(rs.next())
             {
+                User.initializeUser(rs.getInt("userID"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("address"), rs.getString("role"));
             //IMPORTANT Frame switch occurs.
             if(adminButton.isSelected()&&rs.getString("role").toLowerCase().equals("admin")){
                     System.out.println("Login was successful.");
