@@ -92,6 +92,7 @@ public class loginScreen extends javax.swing.JFrame {
         loginButton.addActionListener(this::loginButtonActionPerformed);
 
         registerButton.setText("Register");
+        registerButton.addActionListener(this::registerButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -198,6 +199,8 @@ if(emailField.getText().equals(""))
             if(adminButton.isSelected()&&rs.getString("role").toLowerCase().equals("admin")){
                     System.out.println("Login was successful.");
             JOptionPane.showMessageDialog(this, "The login is successful!", "Logged in", JOptionPane.INFORMATION_MESSAGE);
+            shopping.setVisible(true);
+            this.dispose();
                    }
                    else if(customerButton.isSelected()&&rs.getString("role").toLowerCase().equals("customer")) {
                        System.out.println("Login was successful.");
@@ -208,7 +211,7 @@ if(emailField.getText().equals(""))
                    else{
             javax.swing.JOptionPane.showMessageDialog(this, 
                         "Something is wrong!", 
-                        "Unsuccessfull login", 
+                        "Unsuccessful login", 
                         javax.swing.JOptionPane.ERROR_MESSAGE);
             }
             
@@ -230,6 +233,10 @@ if(emailField.getText().equals(""))
         
         
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+
+    }//GEN-LAST:event_registerButtonActionPerformed
 
     /**
      * @param args the command line arguments

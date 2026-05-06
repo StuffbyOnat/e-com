@@ -19,6 +19,7 @@ public class shoppingScreen extends javax.swing.JFrame {
     Connection conn;
     ArrayList<product> products;
     ordersScreenCustomer os_Customer;
+    ordersScreenAdmin os_Admin;
     /**
      * Creates new form shoppingScreen
      */
@@ -28,7 +29,6 @@ public class shoppingScreen extends javax.swing.JFrame {
         this.setSize(650,800);
         conn = loginScreen.conn;
         products = new ArrayList<>();
-        os_Customer=new ordersScreenCustomer(conn,this);
         initializeDatas();
     }
 
@@ -137,7 +137,13 @@ public class shoppingScreen extends javax.swing.JFrame {
 
     private void ordersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ordersButtonActionPerformed
         if(User.getRole().toLowerCase().equals("customer")){
+        os_Customer=new ordersScreenCustomer(conn,this);
         os_Customer.setVisible(true);
+        this.setVisible(false);
+        }
+        else if(User.getRole().toLowerCase().equals("admin")){
+        os_Admin=new ordersScreenAdmin(conn,this);
+        os_Admin.setVisible(true);
         this.setVisible(false);
         }
     }//GEN-LAST:event_ordersButtonActionPerformed

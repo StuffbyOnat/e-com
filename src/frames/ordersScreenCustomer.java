@@ -111,7 +111,7 @@ public class ordersScreenCustomer extends javax.swing.JFrame implements OrderVie
        shoppingScreen.revalidate();
        shoppingScreen.repaint();
        shoppingScreen.setVisible(true);
-       this.setVisible(false);
+       this.dispose();
     }//GEN-LAST:event_backButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
