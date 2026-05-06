@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package frames;
+import Database.User;
 import Database.dataHolder;
 
 import java.sql.*;
@@ -17,6 +18,8 @@ public class shoppingScreen extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(shoppingScreen.class.getName());
     Connection conn;
     ArrayList<product> products;
+    ordersScreenCustomer os_Customer;
+    ordersScreenAdmin os_Admin;
     /**
      * Creates new form shoppingScreen
      */
@@ -30,9 +33,11 @@ public class shoppingScreen extends javax.swing.JFrame {
         loadCategories();
         loadBrands();
     }
+
+    
     public void initializeDatas(){
         gridPanel.removeAll();
-
+        
         // Veritabanı bağlantını sağladığını ve sorguyu çalıştırdığını varsayıyoruz:
         String sql = "SELECT * " +
                 "FROM Products p " +
@@ -78,8 +83,8 @@ public class shoppingScreen extends javax.swing.JFrame {
         }
     
     }
-    
-        // otomatically loads categories 
+
+        // otomatically loads categories
     public void loadCategories(){
     categoryBox.removeAllItems();
     categoryBox.addItem("All");
@@ -97,8 +102,8 @@ public class shoppingScreen extends javax.swing.JFrame {
     }catch(SQLException e){
         e.printStackTrace();
     }
-    
-    
+
+
     // otomatically loads brand names
 }public void loadBrands(){
     brandBox.removeAllItems();
@@ -153,10 +158,6 @@ gridPanel.repaint();
         topPanel = new javax.swing.JPanel();
         shoppingLabel = new javax.swing.JLabel();
         ordersButton = new javax.swing.JButton();
-        searchField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
-        categoryBox = new javax.swing.JComboBox<>();
-        brandBox = new javax.swing.JComboBox<>();
         scrollPane = new javax.swing.JScrollPane();
         gridPanel = new javax.swing.JPanel();
 
@@ -167,6 +168,7 @@ gridPanel.repaint();
         shoppingLabel.setText("Shopping");
 
         ordersButton.setText("Orders");
+        ordersButton.addActionListener(this::ordersButtonActionPerformed);
 
         searchField.setText("Search Field");
         searchField.addActionListener(this::searchFieldActionPerformed);
@@ -212,20 +214,11 @@ gridPanel.repaint();
         topPanelLayout.setVerticalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
-                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(topPanelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(topPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(ordersButton)
-                        .addGap(15, 15, 15)
-                        .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(searchButton)
-                            .addComponent(categoryBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(brandBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(shoppingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ordersButton))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         getContentPane().add(topPanel, java.awt.BorderLayout.PAGE_START);
@@ -240,7 +233,7 @@ gridPanel.repaint();
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -272,6 +265,19 @@ for(product p : dataHolder.products){
 }
 showProducts(results);
     }//GEN-LAST:event_searchFieldKeyReleased
+
+    private void ordersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ordersButtonActionPerformed
+        if(User.getRole().toLowerCase().equals("customer")){
+        os_Customer=new ordersScreenCustomer(conn,this);
+        os_Customer.setVisible(true);
+        this.setVisible(false);
+        }
+        else if(User.getRole().toLowerCase().equals("admin")){
+        os_Admin=new ordersScreenAdmin(conn,this);
+        os_Admin.setVisible(true);
+        this.setVisible(false);
+        }
+    }//GEN-LAST:event_ordersButtonActionPerformed
 
     /**
      * @param args the command line arguments
