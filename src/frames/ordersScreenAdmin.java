@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package frames;
+import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 /**
  *
@@ -31,7 +32,35 @@ public class ordersScreenAdmin extends javax.swing.JFrame implements OrderView {
         try(PreparedStatement ps = conn.prepareStatement(sql)){
         
         try(ResultSet rs = ps.executeQuery()){
-         
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0); // Clear existing rows
+
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getInt("orderID"),
+                        rs.getTimestamp("orderDate"),
+                        rs.getString("Customer"),
+                        rs.getString("City"),
+                        rs.getString("Product"),
+                        rs.getString("size"),
+                        rs.getString("shade"),
+                        rs.getInt("quantity"),
+                        rs.getString("status")
+                };
+                model.addRow(row);
+            }
+
+            javax.swing.JComboBox<String> statusCombo = new javax.swing.JComboBox<>(new String[]{
+                    "Pending", "Processing", "Shipped", "Delivered", "Cancelled"
+            });
+
+            javax.swing.table.TableColumn statusColumn = jTable1.getColumnModel().getColumn(8);
+            statusColumn.setCellEditor(new javax.swing.DefaultCellEditor(statusCombo));
+
+            // ÖNEMLİ DETAY: Refresh yapıldığında eski dinleyicileri temizle ki her seçimde 10 kere update atmasın
+            for(javax.swing.event.TableModelListener l : model.getTableModelListeners()) {
+                model.removeTableModelListener(l);
+            }
 
       }
         
