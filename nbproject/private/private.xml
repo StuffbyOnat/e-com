@@ -5,10 +5,12 @@
         <group>
             <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/loginScreen.java</file>
             <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/shoppingScreen.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/cart.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/product.java</file>
             <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/Database/initializeDatabase.java</file>
             <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/ProductPane.java</file>
+            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/product.java</file>
+            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/productScreen.java</file>
+            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/ordersScreenCustomer.java</file>
+            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/Database/dataHolder.java</file>
         </group>
     </open-files>
 </project-private>

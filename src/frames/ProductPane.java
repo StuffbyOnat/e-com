@@ -20,11 +20,11 @@ class ProductPane extends JPanel {
     private final Color NORMAL_COLOR = Color.WHITE;
     private final Color HOVER_COLOR = new Color(64, 64, 64); // Üzerine gelince kararması için koyu gri
 
-    public ProductPane(int id, String name, double price, String category, String description, String color, String size, String shade,String sku_Code) {
+    public ProductPane(int id, String name,String category,double price, String description, String color, String size, String shade,String sku_Code,String brandName) {
         this.id = id;
         this.name = name;
         this.price = price;
-        product = new product(id, name, category, price, description, color, size, shade,sku_Code);
+        product = new product(id,name,category,price,description,color,size,shade,sku_Code,brandName);
         iconLabel = new JLabel();
         
         // Panelin varsayılan tasarımı
