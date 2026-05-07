@@ -20,10 +20,12 @@ public class productScreen extends javax.swing.JFrame {
     ProductPane productPane;
     boolean inStock;
     Connection conn;
+    shoppingScreen shoppingScreen;
     /**
      * Creates new form productFrame
      */
     public productScreen(shoppingScreen shoppingScreen, ProductPane productPane) {
+        this.shoppingScreen=shoppingScreen;
         this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         this.productPane = productPane;
@@ -115,12 +117,10 @@ public class productScreen extends javax.swing.JFrame {
         String skuCode = productPane.product.getSku_Code();
         double price = productPane.product.getBasePrice();
         
-        // DİKKAT: Şu an test için userID'yi 2 (Fatma Kaya) olarak sabitliyoruz. 
-        // İleride login ekranından giriş yapan kullanıcının ID'sini buraya aktarabilirsin.
+        
         int currentUserId = User.getUserID();
 
         try {
-            // 1. Önce bu SKU koduna ait varyantın ID'sini (variantID) bulmalıyız
             String variantQuery = "SELECT variantID FROM Product_Variants WHERE sku_Code = ?";
             PreparedStatement pstVar = conn.prepareStatement(variantQuery);
             pstVar.setString(1, skuCode);
@@ -136,7 +136,6 @@ public class productScreen extends javax.swing.JFrame {
                 return;
             }
 
-            // 2. Yeni OrderID ve DetailID oluştur (Tablolarında Auto-Increment olmadığı için MAX+1 yapıyoruz)
             Statement stmt = conn.createStatement();
             ResultSet rsOrd = stmt.executeQuery("SELECT COALESCE(MAX(orderID), 6000) + 1 FROM Orders");
             int newOrderId = 6000;
@@ -146,7 +145,6 @@ public class productScreen extends javax.swing.JFrame {
             int newDetailId = 7000;
             if(rsDet.next()) newDetailId = rsDet.getInt(1);
 
-            // 3. Siparişi 'Orders' tablosuna ekle
             String insertOrder = "INSERT INTO Orders (orderID, userID, orderDate, totalAmount, status) VALUES (?, ?, NOW(), ?, 'Processing')";
             PreparedStatement pstOrd = conn.prepareStatement(insertOrder);
             pstOrd.setInt(1, newOrderId);
@@ -154,8 +152,6 @@ public class productScreen extends javax.swing.JFrame {
             pstOrd.setDouble(3, price);
             pstOrd.executeUpdate();
 
-            // 4. Sipariş Detayını 'Order_Details' tablosuna ekle 
-            // BÜYÜK AN: Bu kod çalıştığında senin SQL'deki trigger'ın devreye girecek ve Inventory tablosundan stoğu 1 düşecek!
             String insertDetail = "INSERT INTO Order_Details (detailID, orderID, variantID, quantity, unitPrice) VALUES (?, ?, ?, 1, ?)";
             PreparedStatement pstDet = conn.prepareStatement(insertDetail);
             pstDet.setInt(1, newDetailId);
@@ -164,13 +160,13 @@ public class productScreen extends javax.swing.JFrame {
             pstDet.setDouble(4, price);
             pstDet.executeUpdate();
 
-            // 5. İşlem başarılı! Kullanıcıya mesaj ver ve ekrandaki stok miktarını anında güncelle
             JOptionPane.showMessageDialog(this, "Order is successful and now being processed.", "Başarılı", JOptionPane.INFORMATION_MESSAGE);
-            
-            getStockInfo(); // Stoğu tekrar çeker, eğer stok 0'a düştüyse butonu otomatik kapatır.
+            PaymentScreen paymentScreen = new PaymentScreen(newOrderId,price,shoppingScreen);
+            paymentScreen.setVisible(true);
+            this.dispose();
+            //getStockInfo(); 
 
         } catch (SQLException ex) {
-            // Eğer senin Trigger "Insufficient stock!" hatası fırlatırsa buraya düşer
             if(ex.getMessage().contains("Insufficient stock")) {
                 JOptionPane.showMessageDialog(this, "Sorry,Out of stock!", "Stock Error", JOptionPane.WARNING_MESSAGE);
                 getStockInfo(); // Ekranı güncelle ki "Out of Stock" yazsın

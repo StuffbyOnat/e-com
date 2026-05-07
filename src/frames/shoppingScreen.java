@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author onatu
+ * @author onatu&demir
  */
 public class shoppingScreen extends javax.swing.JFrame {
 
