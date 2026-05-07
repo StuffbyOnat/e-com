@@ -237,9 +237,16 @@ if(emailField.getText().equals(""))
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+<<<<<<< HEAD
             registerScreen registerScreen= new registerScreen(conn,this.getLocation());
             registerScreen.setVisible(true);
             this.dispose();
+=======
+        // TODO add your handling code here:
+        registerScreen register = new registerScreen();
+register.setVisible(true);
+this.dispose();
+>>>>>>> sevval
     }//GEN-LAST:event_registerButtonActionPerformed
 
     /**

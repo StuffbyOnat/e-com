@@ -4,8 +4,11 @@
  */
 package frames;
 import Database.initializeDatabase;
+<<<<<<< HEAD
 
 import java.awt.*;
+=======
+>>>>>>> sevval
 import java.sql.*;
 import javax.swing.JOptionPane;
 
@@ -16,6 +19,7 @@ import javax.swing.JOptionPane;
 public class registerScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(registerScreen.class.getName());
+<<<<<<< HEAD
     Connection conn;
     /**
      * Creates new form registerScreen
@@ -25,6 +29,16 @@ public class registerScreen extends javax.swing.JFrame {
                 this.conn=conn;
                 initComponents();
                 this.setLocation(location);
+=======
+
+    /**
+     * Creates new form registerScreen
+     */
+    public registerScreen() {
+        
+                initComponents();
+                
+>>>>>>> sevval
     this.nameField.setText("");
     this.surnameField.setText("");
     this.emailField.setText("");
@@ -52,8 +66,13 @@ public class registerScreen extends javax.swing.JFrame {
         usernameField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+<<<<<<< HEAD
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+=======
+        registerButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
+>>>>>>> sevval
         passwordField = new javax.swing.JPasswordField();
         confirmPasswordField = new javax.swing.JPasswordField();
 
@@ -82,11 +101,19 @@ public class registerScreen extends javax.swing.JFrame {
 
         jLabel7.setText("Confirm Password:");
 
+<<<<<<< HEAD
         okButton.setText("OK");
         okButton.addActionListener(this::okButtonActionPerformed);
 
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(this::cancelButtonActionPerformed);
+=======
+        registerButton.setText("OK");
+        registerButton.addActionListener(this::registerButtonActionPerformed);
+
+        backButton.setText("Cancel");
+        backButton.addActionListener(this::backButtonActionPerformed);
+>>>>>>> sevval
 
         passwordField.setText("jPasswordField1");
 
@@ -108,12 +135,18 @@ public class registerScreen extends javax.swing.JFrame {
                                 .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+<<<<<<< HEAD
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(106, 106, 106)))
+=======
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+>>>>>>> sevval
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(confirmPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
                                     .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))
@@ -130,9 +163,15 @@ public class registerScreen extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 46, Short.MAX_VALUE)
+<<<<<<< HEAD
                         .addComponent(okButton)
                         .addGap(18, 18, 18)
                         .addComponent(cancelButton)
+=======
+                        .addComponent(registerButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(backButton)
+>>>>>>> sevval
                         .addGap(53, 53, 53))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -169,8 +208,13 @@ public class registerScreen extends javax.swing.JFrame {
                     .addComponent(confirmPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+<<<<<<< HEAD
                     .addComponent(okButton)
                     .addComponent(cancelButton))
+=======
+                    .addComponent(registerButton)
+                    .addComponent(backButton))
+>>>>>>> sevval
                 .addGap(18, 18, 18))
         );
 
@@ -181,7 +225,11 @@ public class registerScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameFieldActionPerformed
 
+<<<<<<< HEAD
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+=======
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+>>>>>>> sevval
         // TODO add your handling code here:
         String name = nameField.getText();
 String surname = surnameField.getText();
@@ -191,6 +239,7 @@ String password =new String(passwordField.getPassword());
 String confirmPassword =new String(confirmPasswordField.getPassword());
 if(password.equals(confirmPassword)){
 
+<<<<<<< HEAD
     int lastUserID;
     
     String sqlUserID = "select COALESCE(MAX(userID),1) from Users";
@@ -215,19 +264,42 @@ if(password.equals(confirmPassword)){
     try(PreparedStatement ps = conn.prepareStatement(sql)){
         
 ps.setInt(1, lastUserID + 1);
+=======
+    try{
+        Connection conn =initializeDatabase.connect();
+    String sql ="INSERT INTO Users(userID,fullName,email,password,address,role) VALUES(?,?,?,?,?,?)";
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+ps.setInt(1, (int)(Math.random()*10000));
+>>>>>>> sevval
 ps.setString(2, name + " " + surname);
 ps.setString(3, email);
 ps.setString(4, password);
 ps.setString(5, "Unknown Address");
 ps.setString(6, "Customer");
         ps.executeUpdate();
+<<<<<<< HEAD
 
+=======
+>>>>>>> sevval
         JOptionPane.showMessageDialog(
                 this,
                 "Register successful!"
         );
+<<<<<<< HEAD
 
 new loginScreen().setVisible(true);
+=======
+        this.dispose();
+        new loginScreen().setVisible(true);
+        JOptionPane.showMessageDialog(
+        this,
+        "Register successful!"
+);
+
+new loginScreen().setVisible(true);
+
+>>>>>>> sevval
 this.dispose();
     }catch(Exception e){
 
@@ -241,24 +313,66 @@ this.dispose();
             "Passwords do not match!"
     );
 }
+<<<<<<< HEAD
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+=======
+    }//GEN-LAST:event_registerButtonActionPerformed
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+>>>>>>> sevval
         // TODO add your handling code here:
         loginScreen login = new loginScreen();
 
 login.setVisible(true);
+<<<<<<< HEAD
 this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
+=======
+
+this.dispose();
+    }//GEN-LAST:event_backButtonActionPerformed
+>>>>>>> sevval
 
     private void confirmPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmPasswordFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_confirmPasswordFieldActionPerformed
 
+<<<<<<< HEAD
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+=======
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> new registerScreen().setVisible(true));
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backButton;
+>>>>>>> sevval
     private javax.swing.JPasswordField confirmPasswordField;
     private javax.swing.JTextField emailField;
     private javax.swing.JLabel jLabel1;
@@ -269,8 +383,13 @@ this.dispose();
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField nameField;
+<<<<<<< HEAD
     private javax.swing.JButton okButton;
     private javax.swing.JPasswordField passwordField;
+=======
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JButton registerButton;
+>>>>>>> sevval
     private javax.swing.JTextField surnameField;
     private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables

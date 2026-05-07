@@ -3,15 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/loginScreen.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/shoppingScreen.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/Database/initializeDatabase.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/ProductPane.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/product.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/productScreen.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/ordersScreenCustomer.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/Database/dataHolder.java</file>
-            <file>file:/C:/Users/onatu/NetbeansProjects/%20E-Commerce%20Platform%20for%20Cosmetics/src/frames/registerScreen.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/e/commerce/platform/pkgfor/cosmetics/ECommercePlatformForCosmetics.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/Database/initializeDatabase.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/Database/dataHolder.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/ProductPane.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/product.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/shoppingScreen.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/productScreen.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/loginScreen.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/ordersScreenCustomer.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/utilities.java</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/packageIcon.png</file>
+            <file>file:/C:/Users/demir/OneDrive/Belgeler/NetBeansProjects/e-com/src/frames/registerScreen.java</file>
         </group>
     </open-files>
 </project-private>
