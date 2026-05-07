@@ -91,6 +91,7 @@ public class loginScreen extends javax.swing.JFrame {
         loginButton.addActionListener(this::loginButtonActionPerformed);
 
         registerButton.setText("Register");
+        registerButton.addActionListener(this::registerButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -228,6 +229,13 @@ if(emailField.getText().equals(""))
         
         
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        // TODO add your handling code here:
+        registerScreen register = new registerScreen();
+register.setVisible(true);
+this.dispose();
+    }//GEN-LAST:event_registerButtonActionPerformed
 
     /**
      * @param args the command line arguments
