@@ -20,6 +20,7 @@ public class ordersScreenCustomer extends javax.swing.JFrame implements OrderVie
      * Creates new form ordersScreenCustomer
      */
     public ordersScreenCustomer(Connection conn,shoppingScreen ss) {
+        this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         userID=User.getUserID();
         this.conn=conn;

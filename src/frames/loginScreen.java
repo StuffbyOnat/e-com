@@ -21,6 +21,8 @@ public class loginScreen extends javax.swing.JFrame {
      * Creates new form loginScreen
      */
     public loginScreen() {
+        this.setResizable(false);
+        this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         conn=initializeDatabase.connect();
         if(initializeDatabase.getConnectionCount()==0)
@@ -235,7 +237,9 @@ if(emailField.getText().equals(""))
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
-
+            registerScreen registerScreen= new registerScreen(conn,this.getLocation());
+            registerScreen.setVisible(true);
+            this.dispose();
     }//GEN-LAST:event_registerButtonActionPerformed
 
     /**

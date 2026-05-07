@@ -25,6 +25,7 @@ public class shoppingScreen extends javax.swing.JFrame {
      * Creates new form shoppingScreen
      */
     public shoppingScreen(loginScreen loginScreen) {
+        this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         this.setLocation(300,0);
         this.setSize(650,800);

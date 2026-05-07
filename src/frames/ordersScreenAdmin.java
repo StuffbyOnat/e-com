@@ -18,6 +18,7 @@ public class ordersScreenAdmin extends javax.swing.JFrame implements OrderView {
      * Creates new form ordersScreenAdmin
      */
     public ordersScreenAdmin(Connection conn,shoppingScreen shoppingScreen) {
+        this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         this.shoppingScreen=shoppingScreen;
         this.conn=conn;

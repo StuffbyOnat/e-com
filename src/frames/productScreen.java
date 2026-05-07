@@ -24,6 +24,7 @@ public class productScreen extends javax.swing.JFrame {
      * Creates new form productFrame
      */
     public productScreen(shoppingScreen shoppingScreen, ProductPane productPane) {
+        this.setTitle("E-Commerce Platform for Cosmetics");
         initComponents();
         this.productPane = productPane;
         this.setLocation(468, 420);
