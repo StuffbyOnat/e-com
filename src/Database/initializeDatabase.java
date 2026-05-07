@@ -21,7 +21,7 @@ public class initializeDatabase {
         Connection conn = null;
     String url = "jdbc:mysql://localhost:3306/CosmeticsStore";//set the sql file.
     String user="root";//May change on situations.
-    String password = "Onatunlu3a";//To be filled.
+    String password = "";//To be filled.
         
     try{
     conn=DriverManager.getConnection(url, user, password);
