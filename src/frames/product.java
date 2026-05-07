@@ -14,12 +14,13 @@ import Database.dataHolder;
 public class product {
     
     //Products table
-    int productID;
-
+   
     public int getProductID() {
         return productID;
     }
-
+    public String getBrandName(){
+    return brandName;
+}
     public String getProductName() {
         return productName;
     }
@@ -51,7 +52,8 @@ public class product {
     public String getSku_Code() {
         return sku_Code;
     }
-
+     int productID;
+    private final String brandName;
     String productName;
     String category;
     double basePrice;
@@ -62,18 +64,23 @@ public class product {
     String shade;
     String sku_Code;
     
-    public product(int productID,String productName,String category,double basePrice,String description,String color,String size,String shade,String sku_Code){
-    this.productID=productID;
-    this.productName=productName;
-    this.category=category;
-    this.basePrice=basePrice;
-    this.description=description;
-    this.color=color;
-    this.size=size;
-    this.shade=shade;
-    this.sku_Code=sku_Code;
-    }
-
+  public product(int productID,String productName,String category,double basePrice, String description,
+               String color,
+               String size,
+               String shade,
+               String sku_Code,
+               String brandName){
+    this.brandName=brandName;
+    this.productID = productID;
+    this.productName = productName;
+    this.category = category;
+    this.basePrice = basePrice;
+    this.description = description;
+    this.color = color;
+    this.size = size;
+    this.shade = shade;
+    this.sku_Code = sku_Code;
+}
     @Override
     public String toString() {
         return "product{" + "productID=" + productID + ", productName=" + productName + ", category=" + category + ", basePrice=" + basePrice + ", description=" + description + ", color=" + color + ", size=" + size + ", shade=" + shade + ", sku_Code=" + sku_Code + '}';
