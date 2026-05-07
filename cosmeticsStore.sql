@@ -119,7 +119,7 @@ INSERT INTO Users VALUES
 (24, 'Asli Turan', 'asli.t@email.com', 'asli77', 'Gaziemir, Izmir', 'Customer'),
 (25, 'Gokhan Sen', 'gokhan.s@email.com', 'gokhan123', 'Zeytinburnu, Istanbul', 'Customer'),
 (26, 'Ece Dogan', 'ece.d@email.com', 'ece456', 'Gazi, Ankara', 'Customer'),
-(27, 'Hakan Ozturk', 'hakan.o@email.com', 'hakan789', 'Foca, IzUr', 'Customer'),
+(27, 'Hakan Ozturk', 'hakan.o@email.com', 'hakan789', 'Foca, Izmir', 'Customer'),
 (28, 'Bahar Kaplan', 'bahar.k@email.com', 'bahar321', 'Fatih, Istanbul', 'Customer'),
 (29, 'Umut Kiliç', 'umut.k@email.com', 'umut99', 'Golbasi, Ankara', 'Customer'),
 (30, 'Merve Cetin', 'merve.c@email.com', 'merve44', 'Urla, Izmir', 'Customer');
@@ -241,7 +241,7 @@ INSERT INTO Inventory VALUES
 (35, 8001, 85, 'Warehouse H - I1'), (36, 8002, 40, 'Warehouse H - I2'),
 (37, 8003, 55, 'Warehouse H - I3'), (38, 8004, 30, 'Warehouse H - I4');
 
--- ONLARCA GERÇEKÇİ SİPARİŞ
+-- SİPARİŞ
 INSERT INTO Orders VALUES 
 (6001, 2, '2026-04-15 11:20:00', 45.90, 'Delivered'),
 (6002, 3, '2026-04-20 14:45:10', 90.00, 'Shipped'),
@@ -312,10 +312,9 @@ INSERT INTO Payments VALUES
 (8020, 6020, 'Credit Card', 'TXN-020', 'Success');
 
 -- ==========================================================
--- 4. TEKNİK ARAÇLAR (Senin Yazdığın Trigger ve View)
+-- 4. TEKNİK ARAÇLAR (Trigger ve View)
 -- ==========================================================
 
--- Gelişmiş Stok Kontrolü (Trigger)
 DELIMITER //
 CREATE TRIGGER BeforeOrderInsert
 BEFORE INSERT ON Order_Details
@@ -351,3 +350,4 @@ SELECT * FROM Product_Variants;-- Boyut, ml, Renk ve SKU Kodları
 SELECT * FROM Inventory;       -- Farklı Depolarda Stok Takibi
 SELECT * FROM Orders;          -- Farklı Zamanlarda Oluşturulmuş Siparişler
 SELECT * FROM AdminOrderReport;-- Tam Kapsamlı Sipariş Raporu
+SELECT * FROM Payments;        -- Ödeme İşlemleri Tablosu
