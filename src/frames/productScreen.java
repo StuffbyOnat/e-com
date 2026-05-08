@@ -37,8 +37,7 @@ public class productScreen extends javax.swing.JFrame {
         //this.setSize(shoppingScreen.getSize());
         this.setLocation(shoppingScreen.getLocation());
         
-        // 2. Arayüzdeki (JLabel ve JTextPane) alanları objeden gelen verilerle doldur
-        // (ProductPane içindeki nesnenin adı "prodcut" olduğu için o şekilde çağırdık)
+        
         if (productPane.product != null) {
             name.setText(productPane.product.getProductName());
             category.setText(productPane.product.getCategory());
@@ -49,18 +48,14 @@ public class productScreen extends javax.swing.JFrame {
             shade.setText(productPane.product.getShade());
         }
 
-        // 3. İkon ayarlaması (Eğer utilities sınıfınla atamak istersen)
-        // utilities util = new utilities();
-        // productIcon.setIcon(util.setIconSize(84, 91, "/frames/packageIcon.png"));
-
-        // 4. "Go Back" (Geri Dön) Butonunun Çalışması (jButton1)
+        
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Eski ekranın boyut ve konumunu bu ekranın güncel haline eşitle (Pencereyi kaydırdıysa diye)
+                
                 //shoppingScreen.setSize(productScreen.this.getSize());
                 shoppingScreen.setLocation(productScreen.this.getLocation());
                 
-                // Eski ekranı göster, bu ekranı kapat (yok et)
+                
                 shoppingScreen.initializeDatas();
                 shoppingScreen.revalidate();
                 shoppingScreen.repaint();
@@ -71,30 +66,29 @@ public class productScreen extends javax.swing.JFrame {
     }
     
     public void getStockInfo() {
-        // Ürün objesi yoksa hata vermemesi için güvenlik kontrolü
+        
         if (productPane.product == null) return;
 
-        // Ürünün benzersiz SKU kodunu alıyoruz
+        //Unique sku_code
         String skuCode = productPane.product.getSku_Code();
         
-        // Veritabanı Sorgusu: O SKU koduna sahip varyantın tüm depolardaki stoklarını topla
+        // Sku_Code query.
         String sql = "SELECT SUM(i.stockQuantity) AS totalStock " +
                      "FROM Inventory i " +
                      "JOIN Product_Variants pv ON i.variantID = pv.variantID " +
                      "WHERE pv.sku_Code = ?";
 
-        // Güvenli sorgu çalıştırmak için PreparedStatement kullanıyoruz
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, skuCode); // Soru işareti olan yere SKU kodunu koy
+            pstmt.setString(1, skuCode); 
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 int stock = 0;
                 if (rs.next()) {
-                    stock = rs.getInt("totalStock"); // Toplam stoğu değişkene ata
+                    stock = rs.getInt("totalStock"); 
                 }
 
-                // Stok kontrolü ve Arayüz (UI) Güncellemesi
+                
                 if (stock > 0) {
                     stockStatus.setText("In Stock");
                     stockStatus.setForeground(new java.awt.Color(0, 153, 51)); // Yazıyı Yeşil yap

@@ -36,7 +36,6 @@ public class ordersScreenAdmin extends javax.swing.JFrame implements OrderView {
 
             try(ResultSet rs = ps.executeQuery()){
 
-                // 1. DİNAMİK TABLO MODELİMİZİ OLUŞTURUYORUZ
                 String[] columnNames = {"Order ID", "Order Date", "Customer", "City", "Product", "Size", "Shade", "Quantity", "Status"};
                 DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
                     @Override

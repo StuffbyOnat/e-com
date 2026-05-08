@@ -70,7 +70,7 @@ public class shoppingScreen extends javax.swing.JFrame {
 
             while (rs.next()) {
                 int dbId = rs.getInt("productID");
-                String dbName = rs.getString("brandName"); // productName hatası düzeltildi
+                String dbName = rs.getString("brandName");
                 double dbPrice = rs.getDouble("basePrice");
                 String dbCategory = rs.getString("categoryName");
                 String dbDescription = rs.getString("description");

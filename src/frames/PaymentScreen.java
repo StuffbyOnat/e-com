@@ -25,6 +25,7 @@ public class PaymentScreen extends javax.swing.JFrame {
      * Örn: new PaymentScreen(siparisID, toplamFiyat, this).setVisible(true);
      */
     public PaymentScreen(int orderId, double totalPrice, shoppingScreen sS) {
+        this.setTitle("E-Commerce Platform for Cosmetics");
         this.sS = sS;
         this.orderId = orderId; // <-- DIŞARIDAN GELEN SİPARİŞ ID'Sİ EKLENDİ
         initComponents();

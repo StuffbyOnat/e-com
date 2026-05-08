@@ -1,13 +1,9 @@
--- ==========================================================
--- 1. DATABASE SIFIRLAMA VE KURULUM
--- ==========================================================
+
 DROP DATABASE IF EXISTS CosmeticsStore;
 CREATE DATABASE CosmeticsStore;
 USE CosmeticsStore;
 
--- ==========================================================
--- 2. TABLO YAPILARI (DDL) - Orijinal Tasarım
--- ==========================================================
+
 CREATE TABLE Users (
     userID INT PRIMARY KEY,
     fullName VARCHAR(100) NOT NULL,
@@ -87,11 +83,9 @@ CREATE TABLE Payments (
         REFERENCES Orders(orderID)
 );
 
--- ==========================================================
--- 3. DEVASA VERİ GİRİŞİ (DML)
--- ==========================================================
 
--- KULLANICILAR (Müşteriler ve Adminler)
+
+
 INSERT INTO Users VALUES 
 (1, 'Ayse Yilmaz', 'ayse.y@email.com', 'ayse123', 'Cankaya, Ankara', 'Admin'),
 (2, 'Fatma Kaya', 'fatma.k@email.com', 'fatma456', 'Konak, Izmir', 'Customer'),
@@ -124,7 +118,7 @@ INSERT INTO Users VALUES
 (29, 'Umut Kiliç', 'umut.k@email.com', 'umut99', 'Golbasi, Ankara', 'Customer'),
 (30, 'Merve Cetin', 'merve.c@email.com', 'merve44', 'Urla, Izmir', 'Customer');
 
--- GENİŞLETİLMİŞ KATEGORİLER
+
 INSERT INTO Categories VALUES 
 (10, 'Cosmetics', NULL), (11, 'Skin Care', 10), (12, 'Moisturizers', 11),
 (13, 'Cleansers', 11), (14, 'Serums', 11), (15, 'Masks', 11),
@@ -178,7 +172,6 @@ INSERT INTO Products VALUES
 (802, 45, 'Chino Stretch Khaki', 65.00, 'Slim fit stretch chino pants'),
 (803, 45, 'Raw Denim Selvedge', 110.00, 'Premium raw unwashed denim jeans');
 
--- ÜRÜN VARYANTLARI (Farklı Boyut ve Renk Seçenekleri)
 INSERT INTO Product_Variants VALUES 
 (1001, 100, 'Clear', '50ml', 'Standard', 'GE-50ML-STD'),
 (1002, 101, 'White', '50ml', 'Standard', 'AD-50ML-STD'),
@@ -241,7 +234,6 @@ INSERT INTO Inventory VALUES
 (35, 8001, 85, 'Warehouse H - I1'), (36, 8002, 40, 'Warehouse H - I2'),
 (37, 8003, 55, 'Warehouse H - I3'), (38, 8004, 30, 'Warehouse H - I4');
 
--- SİPARİŞ
 INSERT INTO Orders VALUES 
 (6001, 2, '2026-04-15 11:20:00', 45.90, 'Delivered'),
 (6002, 3, '2026-04-20 14:45:10', 90.00, 'Shipped'),
@@ -288,7 +280,6 @@ INSERT INTO Order_Details VALUES
 (7020, 6019, 1002, 1, 55.00),
 (7021, 6020, 4003, 1, 95.00);
 
--- ÖDEME İŞLEMLERİ (Transaction Kayıtları)
 INSERT INTO Payments VALUES 
 (8001, 6001, 'PayPal', 'TXN-001', 'Success'),
 (8002, 6002, 'Credit Card', 'TXN-002', 'Success'),
@@ -311,9 +302,7 @@ INSERT INTO Payments VALUES
 (8019, 6019, 'Wire Transfer', 'TXN-019', 'Success'),
 (8020, 6020, 'Credit Card', 'TXN-020', 'Success');
 
--- ==========================================================
--- 4. TEKNİK ARAÇLAR (Trigger ve View)
--- ==========================================================
+
 
 DELIMITER //
 CREATE TRIGGER BeforeOrderInsert
@@ -331,7 +320,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- Yönetici Raporu (View)
 CREATE VIEW AdminOrderReport AS
 SELECT o.orderID, o.orderDate, u.fullName AS Customer, u.address AS City, p.brandName AS Product, pv.size, pv.shade, od.quantity, o.status
 FROM Orders o
@@ -340,14 +328,11 @@ JOIN Order_Details od ON o.orderID = od.orderID
 JOIN Product_Variants pv ON od.variantID = pv.variantID
 JOIN Products p ON pv.productID = p.productID;
 
--- ==========================================================
--- 5. KONTROL SORGULARI 
--- ==========================================================
-SELECT * FROM Users;           -- 30 Kullanıcı
-SELECT * FROM Categories;      -- Detaylı Kozmetik ve Moda Hiyerarşisi
-SELECT * FROM Products;        -- Onlarca Kapsamlı Ürün
-SELECT * FROM Product_Variants;-- Boyut, ml, Renk ve SKU Kodları
-SELECT * FROM Inventory;       -- Farklı Depolarda Stok Takibi
-SELECT * FROM Orders;          -- Farklı Zamanlarda Oluşturulmuş Siparişler
-SELECT * FROM AdminOrderReport;-- Tam Kapsamlı Sipariş Raporu
-SELECT * FROM Payments;        -- Ödeme İşlemleri Tablosu
+SELECT * FROM Users;           
+SELECT * FROM Categories;      
+SELECT * FROM Products;        
+SELECT * FROM Product_Variants;
+SELECT * FROM Inventory;       
+SELECT * FROM Orders;          
+SELECT * FROM AdminOrderReport;
+SELECT * FROM Payments;        
