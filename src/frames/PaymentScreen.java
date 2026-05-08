@@ -30,8 +30,8 @@ public class PaymentScreen extends javax.swing.JFrame {
         this.orderId = orderId; // <-- DIŞARIDAN GELEN SİPARİŞ ID'Sİ EKLENDİ
         initComponents();
         this.totalPrice = totalPrice;
-        amountLabel.setText("$" + totalPrice);
-        payButton.setText("Pay $" + totalPrice);
+        amountLabel.setText("TL" + totalPrice);
+        payButton.setText("Pay TL" + totalPrice);
         nameField.setText("");
         cardNumberField.setText("");
         expiryField.setText("");
